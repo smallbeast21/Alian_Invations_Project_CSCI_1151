@@ -1,3 +1,19 @@
+# Alian Invations Part 1
+# Ishmael Kaloko
+# 04/06/2025
+
+"""
+
+This is the first part of my Alian Invations project that where the player 
+controls a spaceship that is fixed to either the left or right border of 
+the screen and moves only vertically. The game has a full-screen background 
+image, and the spaceship is designed to always face inward towards the center of 
+the screen. The ship's position can be toggled between the left and right edges 
+by pressing the 'T' key, while the up and down or W and S  keys allow for 
+vertical movement. 
+"""
+
+
 import sys
 import pygame
 from settings import Settings
