@@ -24,12 +24,10 @@ class Ship:
 
     def _set_orientation_and_position(self):
         if self.side == 'left':
-           
             self.image = pygame.transform.rotate(self.original_image, -90)
             self.rect = self.image.get_rect()
             self.rect.midleft = self.boundaries.midleft
         elif self.side == 'right':
-          
             self.image = pygame.transform.rotate(self.original_image, 90)
             self.rect = self.image.get_rect()
             self.rect.midright = self.boundaries.midright
@@ -40,15 +38,18 @@ class Ship:
         else:
             self.side = 'left'
         self._set_orientation_and_position()
+    
+    # New method to reset the ship's position when the game resets
+    def reset_position(self):
+        self._set_orientation_and_position()
+        self.y = float(self.rect.y)
 
     def update(self):
-        
         if self.moving_up and self.rect.top > self.boundaries.top:
             self.y -= self.settings.ship_speed
         if self.moving_down and self.rect.bottom < self.boundaries.bottom:
             self.y += self.settings.ship_speed
         self.rect.y = int(self.y)
-        
         
         if self.side == 'left':
             self.rect.left = self.boundaries.left

@@ -33,10 +33,10 @@ class Settings:
         # Ship settings
         self.ship_w = 40
         self.ship_h = 60
-        self.ship_speed = 5
+        self.ship_speed = 8
 
         #Settings
-        self.enemy_speed = 2
+        self.enemy_speed = 1
         self.bullet_speed = 10
         
         # Which border to start on: 'left' or 'right'
