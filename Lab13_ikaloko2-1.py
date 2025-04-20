@@ -24,17 +24,24 @@ ide of the window, the game resets and becomes difficult.
 
 import sys
 import pygame
-from settings import Settings
-from ship import Ship
+from settings    import Settings
+from ship        import Ship
 from enemy_fleet import EnemyFleet
-from bullet import Bullet
+from bullet      import Bullet
 
 class AlienInvasion:
+    """
+    The primary game class to manage the Alien Invasion 
+    """
     def __init__(self) -> None:
+        """
+        Initialize pygame, load resources, and create game objects.
+        """
         pygame.init()
         self.settings = Settings()
-        self.screen = pygame.display.set_mode(
-            (self.settings.screen_w, self.settings.screen_h))
+        self.screen   = pygame.display.set_mode(
+            (self.settings.screen_w, self.settings.screen_h)
+        )
         pygame.display.set_caption(self.settings.name)
 
         # Load and scale background
@@ -43,19 +50,19 @@ class AlienInvasion:
             self.bg, (self.settings.screen_w, self.settings.screen_h)
         )
         
-        self.clock = pygame.time.Clock()
+        self.clock   = pygame.time.Clock()
         self.running = True
 
-        # Create the ship
-        self.ship = Ship(self)
-        
-        # Create enemy fleet 
+        # Instantiate game entities
+        self.ship        = Ship(self)
         self.enemy_fleet = EnemyFleet(self)
-        
-        # Create bullet group
-        self.bullets = pygame.sprite.Group()
-        
+        self.bullets     = pygame.sprite.Group()
+
     def run_game(self) -> None:
+        """
+        Enter the main game loop: process events, update entities, 
+        check collisions, and redraw the screen.
+        """
         while self.running:
             self._check_events()
             self.ship.update()
@@ -65,61 +72,67 @@ class AlienInvasion:
             self._check_collisions()
             self._update_screen()
             self.clock.tick(self.settings.FPS)
-            
+
     def _check_collisions(self) -> None:
-        
-        collisions = pygame.sprite.groupcollide(self.enemy_fleet.fleet, self.bullets, True, True)
-        
+        """
+        Handle collisions between bullets and enemies, and reset game if needed.
+        """
+        pygame.sprite.groupcollide(self.enemy_fleet.fleet, self.bullets, True, True)
         for enemy in self.enemy_fleet.fleet.sprites():
-            if enemy.rect.colliderect(self.ship.rect) or enemy.rect.right >= self.settings.screen_w:
+            if (enemy.rect.colliderect(self.ship.rect) or
+                enemy.rect.right >= self.settings.screen_w):
                 self._reset_game()
                 break
-        
+
     def _reset_game(self) -> None:
-        # Reset the game: clear enemy fleet and bullets, then recreate the enemy fleet.
+        """
+        Clear current enemies and bullets, then reinitialize fleet and ship.
+        """
         self.enemy_fleet.fleet.empty()
         self.bullets.empty()
         self.enemy_fleet.create_fleet()
         self.ship.reset_position()
-        
+
     def _update_screen(self) -> None:
+        """
+        Draw all game elements (background, ship, bullets, enemies) and flip the display.
+        """
         self.screen.blit(self.bg, (0, 0))
         self.ship.draw()
-        # Draw all bullets.
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.enemy_fleet.draw()
         pygame.display.flip()
-        
-    def _check_events(self):
+
+    def _check_events(self) -> None:
+        """
+        Respond to keypresses and quitting events.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                if event.key in (pygame.K_UP, pygame.K_w):
                     self.ship.moving_up = True
-                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                elif event.key in (pygame.K_DOWN, pygame.K_s):
                     self.ship.moving_down = True
                 elif event.key == pygame.K_t:
                     self.ship.pick_side()
                 elif event.key == pygame.K_SPACE:
-                    
-                    bullet_start = self.ship.rect.midleft
-                    new_bullet = Bullet(self, bullet_start)
-                    self.bullets.add(new_bullet)
-                #quit button
+                    direction = -1 if self.ship.side == 'right' else 1
+                    start = (self.ship.rect.midleft if direction == -1 
+                             else self.ship.rect.midright)
+                    self.bullets.add(Bullet(self, start, direction))
                 elif event.key == pygame.K_q:
                     self.running = False
                     pygame.quit()
                     sys.exit()
-
-            #Release Key
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                if event.key in (pygame.K_UP, pygame.K_w):
                     self.ship.moving_up = False
-                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                elif event.key in (pygame.K_DOWN, pygame.K_s):
                     self.ship.moving_down = False
 
 if __name__ == '__main__':
