@@ -1,4 +1,10 @@
-# bullet.py
+"""
+Module: defines the bullet sprite and its movement.
+
+Assets:
+- Uses WhiteDualLaser.png (bullet sprite, see settings.py)
+"""
+
 import pygame
 
 class Bullet(pygame.sprite.Sprite):
@@ -25,28 +31,28 @@ class Bullet(pygame.sprite.Sprite):
                                        Defaults based on ship side.
         """
         super().__init__()
-        self.game = game
-        self.settings = game.settings
-        self.screen = game.screen
-        
+        self.game      = game
+        self.settings  = game.settings
+        self.screen    = game.screen
+
         # Load and scale the bullet image
         self.image = pygame.image.load(self.settings.bullet_file)
         self.image = pygame.transform.scale(self.image, (15, 5))
         self.rect = self.image.get_rect(center=start_pos)
-        
+
         self.x = float(self.rect.x)
         if direction is None:
             direction = -1 if game.ship.side == 'right' else 1
         self.direction = direction
-        
-    def update(self):
+
+    def update(self) -> None:
         """
         Move the bullet horizontally according to its direction and speed.
         """
         self.x += self.direction * self.settings.bullet_speed
         self.rect.x = int(self.x)
-        
-    def draw_bullet(self):
+
+    def draw_bullet(self) -> None:
         """
         Draw the bullet on the screen at its current position.
         """

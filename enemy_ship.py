@@ -1,4 +1,10 @@
-# enemy_ship.py
+"""
+Module: defines a single enemy spaceship sprite.
+
+Assets:
+- Uses ememyShip.png (enemy ship sprite, see settings.py)
+"""
+
 import pygame
 
 class EnemyShip(pygame.sprite.Sprite):
@@ -21,24 +27,24 @@ class EnemyShip(pygame.sprite.Sprite):
             game: The main AlienInvasion instance.
         """
         super().__init__()
-        self.game = game
+        self.game  = game
         self.settings = game.settings
-        self.screen = game.screen
-        
+        self.screen  = game.screen
+
         # Load and scale the enemy image
         self.image = pygame.image.load(self.settings.enemy_file)
         self.image = pygame.transform.scale(self.image, (70, 55))
         self.rect = self.image.get_rect()
         self.x = float(self.rect.x)
-        
-    def update(self):
+
+    def update(self) -> None:
         """
         Update the enemy's x-coordinate based on settings.enemy_speed.
         """
         self.x += self.settings.enemy_speed
         self.rect.x = int(self.x)
-        
-    def draw_enemy(self):
+
+    def draw_enemy(self) -> None:
         """
         Draw the enemy on the screen at its current position.
         """
